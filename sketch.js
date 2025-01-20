@@ -60,11 +60,11 @@ function setup() {
   generateVoronoi(); // 초기 Voronoi 다이어그램 생성
 
   // 60초마다 새로운 Voronoi 다이어그램 생성
-  setInterval(generateVoronoi, 60000);
+  setInterval(generateVoronoi, 6000);
 }
 
 function generateVoronoi() {
-  if (Object.keys(colorPalettes).length >= 0) {
+  if (Object.keys(colorPalettes).length > 0) {
     // 랜덤으로 색상 팔레트를 선택
     randomIndex = floor(random(Object.keys(colorPalettes).length));
     selectedPalette = colorPalettes[randomIndex];
@@ -85,6 +85,7 @@ function generateVoronoi() {
   delaunay = calculateDelaunay(points);
   voronoi = delaunay.voronoi([offsetX, offsetY, offsetW, offsetH]);
 
+  background(bgImg); // 교회 백그라운드 이미지
   drawVoronoi();
 
   // 십자가 이미지
@@ -97,9 +98,6 @@ function generateVoronoi() {
   image(churchCross, offX + 20, offY - 100, resizedWidth, resizedHeight);
   // 십자가 이미지
   //image(churchCross, 0, 0, churchCross.width, churchCross.height);
-
-  // 교회 백그라운드 이미지 
-  background(bgImg); 
 
 }
 
@@ -165,7 +163,7 @@ function drawPerlinGradientPolygon(polygon) {
   
   // 선택된 팔레트에서 색상 선택
   let baseColorHex = selectedPalette[floor(random(selectedPalette.length))];
-  console.log("selectedPalette: ", selectedPalette, "baseColorHex: ", baseColorHex);
+  //console.log("selectedPalette: ", selectedPalette, "baseColorHex: ", baseColorHex);
   let baseColorHSB = hexToHSB(baseColorHex);
 
   // 랜덤 색상 생성 (HSB 모드 사용)
