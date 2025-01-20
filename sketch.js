@@ -26,11 +26,17 @@ let points = [];
 let delaunay, voronoi;
 let bgImg;
 let offsetX, offsetY, offsetW, offsetH
+let scaleFactor;
+let imgWidth;
+let imgHeight;
 
 let colorPalettes = {}; // JSON 색상 데이터를 저장할 배열
 let selectedPalette; // 선택된 색상 팔레트
 let randomIndex;
 let churchCross;
+
+let crossOffsetXFactor = 0.01; // X 오프셋 비율
+let crossOffsetYFactor = -0.1; // Y 오프셋 비율
 
 function preload() {
   // 십자가 이미지
@@ -42,63 +48,77 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(bgImg.width, bgImg.height);
-  background(bgImg);
-  //console.log("cp", colorPalettes.length);
-  
-  // offsetX = width / 3.5;
-  // offsetY = height / 4.84;
-  // offsetW = width / 1.359;
-  // offsetH = height / 1.937;
- 
-  offsetX = 260;
-  offsetY = 160;
-  offsetW = 800;
-  offsetH = 550;
-  // console.log(offsetX, offsetY, offsetW, offsetH);
-  
+  noScroll(); // 스크롤 금지. 스크롤바 생기는 것 방지
+  createCanvas(windowWidth, windowHeight);
+
+  drawChurch(); // 교회 이미지 그리기
   generateVoronoi(); // 초기 Voronoi 다이어그램 생성
 
   // 60초마다 새로운 Voronoi 다이어그램 생성
-  setInterval(generateVoronoi, 6000);
+  setInterval(() => {
+    drawChurch();
+    generateVoronoi();
+  }, 6000); // 60000 milliseconds = 60 seconds
+}
+
+function drawChurch() {
+  scaleFactor = min(windowWidth / bgImg.width, windowHeight / bgImg.height);
+  imgWidth = bgImg.width * scaleFactor;
+  imgHeight = bgImg.height * scaleFactor;
+  offsetX = (windowWidth - imgWidth) / 2;
+  offsetY = (windowHeight - imgHeight) / 2;
+  offsetW = imgWidth;
+  offsetH = imgHeight;
+
+  image(bgImg, offsetX, offsetY, imgWidth, imgHeight);
 }
 
 function generateVoronoi() {
   if (Object.keys(colorPalettes).length > 0) {
     // 랜덤으로 색상 팔레트를 선택
-    randomIndex = floor(random(Object.keys(colorPalettes).length));
-    selectedPalette = colorPalettes[randomIndex];
+    let keys = Object.keys(colorPalettes);
+    randomIndex = floor(random(keys.length));
+    selectedPalette = colorPalettes[keys[randomIndex]];
   }
-   // console.log("Selected Palette Index:", randomIndex, "Palette:", Object.keys(colorPalettes).length, selectedPalette.length);
+
+  // if (!selectedPalette) {
+  //   console.error("No color palette selected.");
+  //   return;
+  // }
   
   // 새로운 포인트 배열 생성
   points = [];
   for (let i = 0; i < 200; i++) {  // 75
-    let x = random(width);
-    let y = random(height);
-    // let x = random(rectX1, rectX3);
-    // let y = random(rectY1, rectY3);
+    let x = random(imgWidth) + offsetX;
+    let y = random(imgHeight) + offsetY;
     points[i] = createVector(x, y);
   }
 
   // Delaunay 및 Voronoi 갱신
   delaunay = calculateDelaunay(points);
-  voronoi = delaunay.voronoi([offsetX, offsetY, offsetW, offsetH]);
-
-  background(bgImg); // 교회 백그라운드 이미지
+  voronoi = delaunay.voronoi([offsetX, offsetY, offsetX + imgWidth - 30, offsetY + imgHeight - 30]);
+  
+  // 1) 배경 크리어
+  background(255); // Clear the background
+ 
+  // 3) Voronoi 다이어그램 그리기
   drawVoronoi();
 
-  // 십자가 이미지
-  let scaleFactor = min(width / churchCross.width, height / churchCross.height);
-  let resizedWidth = churchCross.width * scaleFactor * 0.7;
-  let resizedHeight = churchCross.height * scaleFactor * 0.7;
+  // 4) 십자가 이미지
+  let crossScaleFactorWidth = windowWidth / churchCross.width;
+  let crossScaleFactorHeight = windowHeight / churchCross.height;
+  console.log("crossScaleFactorWidth: ", crossScaleFactorWidth, "crossScaleFactorHeight: ", crossScaleFactorHeight);
+  let crossScaleFactor = min(crossScaleFactorWidth, crossScaleFactorHeight);
+  let resizedWidth = churchCross.width * crossScaleFactor*0.5;
+  let resizedHeight = churchCross.height * crossScaleFactor*0.5;
 
-  let offX = (width - resizedWidth) / 2; // 중앙 정렬을 위한 X 오프셋
-  let offY = (height - resizedHeight) / 2; // 중앙 정렬을 위한 Y 오프셋
-  image(churchCross, offX + 20, offY - 100, resizedWidth, resizedHeight);
-  // 십자가 이미지
-  //image(churchCross, 0, 0, churchCross.width, churchCross.height);
+  let crossOffX = (windowWidth - resizedWidth) / 2 + crossOffsetXFactor * windowWidth; // 중앙 정렬을 위한 X 오프셋
+  let crossOffY = (windowHeight - resizedHeight) / 2 + crossOffsetYFactor * windowHeight; // 중앙 정렬을 위한 Y 오프셋
+  console.log("crossOffX: ", crossOffX, "crossOffY: ", crossOffY);
+  image(churchCross, crossOffX, crossOffY, resizedWidth, resizedHeight);
 
+  // 2) 배경 이미지 - 교회 이미지
+  image(bgImg, offsetX, offsetY, imgWidth, imgHeight);
 }
 
 function drawVoronoi() {
