@@ -40,7 +40,7 @@ let crossOffsetYFactor = -0.1; // Y 오프셋 비율
 
 function preload() {
   // 십자가 이미지
-  churchCross = loadImage("assets/pexels-jonathanborba-2917373-bw-sm.png");
+  churchCross = loadImage("assets/pexels-jonathanborba-2917373-bw.png");
   // JSON 파일 로드 (예: colorPalettes.json)
   colorPalettes = loadJSON("assets/colors.json");
   // 배경 이미지
