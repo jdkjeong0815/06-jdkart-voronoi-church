@@ -54,11 +54,11 @@ function setup() {
   drawChurch(); // 교회 이미지 그리기
   generateVoronoi(); // 초기 Voronoi 다이어그램 생성
 
-  // 60초마다 새로운 Voronoi 다이어그램 생성
+  // 30초마다 새로운 Voronoi 다이어그램 생성
   setInterval(() => {
     drawChurch();
     generateVoronoi();
-  }, 6000); // 60000 milliseconds = 60 seconds
+  }, 30000); // 
 }
 
 function drawChurch() {
