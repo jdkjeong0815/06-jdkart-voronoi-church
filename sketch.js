@@ -1,13 +1,27 @@
 // Coding Train / Daniel Shiffman
 // Weighted Voronoi Stippling
 // https://thecodingtrain.com/challenges/181-image-stippling
+// =============================================================================
+// 프로그램 : 06-jdkart-voronoi-church 
+// Created : 2025-Jan-06
+// 작가 : jdk                    Inspiration : 
+// Github : https://github.com/jdkjeong0815/06-jdkart-voronoi-church
+// Web : https://jdkjeong0815.github.io/06-jdkart-voronoi-church/
+// 작품 설명 : 교회의 창문을 표현한 스테인드글라스 프로젝트. 빛의 표현을 더욱 뚜렷하게 하기 위해 그라디언트 방향을 변경하고, 십자가 이미지를 추가하여 교회의 분위기를 더욱 강조하였다.
+// 프로그램 특징 : Voronoi 다이어그램, HSL 컬러 색상표 사용. 빛의 느김을 더욱 잘 살리기 위헤 RGB, HSV(HSV), HSL 모드 중 HSL 모드를 사용하였다.
+// 라이브러리 기능 : jdklib.js / 반응형 UI 안됨. 풀스크린 안됨
+// 주기적인 리로드 : 매  ??초
+// Last Update : 
+// 2025-Jan-07 요약
+//  - 1) 빛의 밝음과 어두움을 더욱 뚜렷하게 하는 로직 추가
+//  - 2) 
+// 2025-Jan-06 요약:
+//  - 1) 십자가 이미지 추가, 360도 랜덤 각도 적용, 그라디언트 방향 변경
+//  - 2)  
+// =============================================================================
 
-// 스테인드글라스 프로젝트
-// jdk 수정 
-// Last Update: 
-// 2025. Jan. 07 - 빛의 밝음과 어두움을 더욱 뚜렷하게 하는 로직 추가
-// 2025. Jan. 06 - 십자가 이미지 추가, 360도 랜덤 각도 적용, 그라디언트 방향 변경
 
+let saveFileName = "06-jdkart-voronoi-church";
 let points = [];
 let delaunay, voronoi;
 let bgImg;
@@ -20,11 +34,11 @@ let churchCross;
 
 function preload() {
   // 십자가 이미지
-  churchCross = loadImage("pexels-jonathanborba-2917373-bw-sm.png");
+  churchCross = loadImage("assets/pexels-jonathanborba-2917373-bw-sm.png");
   // JSON 파일 로드 (예: colorPalettes.json)
-  colorPalettes = loadJSON("./colors.json");
+  colorPalettes = loadJSON("assets/colors.json");
   // 배경 이미지
-  bgImg = loadImage("sanfrancisco-California-reflection-church-architecture-Raw-962960-wallhere.com-square-투명3.png");
+  bgImg = loadImage("assets/sanfrancisco-California-reflection-church-architecture-Raw-962960-wallhere.com-square-투명3.png");
 }
 
 function setup() {
@@ -45,7 +59,7 @@ function setup() {
   
   generateVoronoi(); // 초기 Voronoi 다이어그램 생성
 
-  // 10초마다 새로운 Voronoi 다이어그램 생성
+  // 60초마다 새로운 Voronoi 다이어그램 생성
   setInterval(generateVoronoi, 60000);
 }
 
